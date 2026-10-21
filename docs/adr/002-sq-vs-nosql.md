@@ -1,5 +1,5 @@
 
-# ADR-003: Datalagring – Relationsdatabas (SQL) [2]
+# ADR-002: Datalagring – Relationsdatabas (SQL) [2]
 
 ## Status
 Antagen
