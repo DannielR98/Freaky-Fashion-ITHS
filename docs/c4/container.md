@@ -3,34 +3,31 @@
 Teknikneutralt utkast. Modulerna Katalog, Order, Kund och Betalning ligger inuti applikationen (se [ADR-001](../adr/001-modular-monolith.md)) och är inte egna containers.
 
 ```mermaid
+%%{init: {"c4": {"diagramMarginX": 50, "diagramMarginY": 50, "c4ShapeMargin": 120, "c4ShapePadding": 20, "width": 260, "height": 140, "boxMargin": 20, "personFontSize": "16px", "systemFontSize": "16px", "containerFontSize": "16px", "messageFontSize": "15px"}}}%%
 C4Container
-  title Container Diagram – Freaky Fashion (utkast)
+    title E-handel – Containerdiagram
 
-  Person(kund, "Kund")
-  Person(admin, "Administratör")
+    Person(kund, "Kund", "Handlar och betalar")
+    System_Ext(betaltjanst, "Betaltjänst", "Genomför betalningar")
 
-  System_Boundary(ff, "Freaky Fashion") {
-    Container(web, "Webbklient", "Webbläsare", "Kund- och adminvy")
-    Container(app, "Applikation", "Modulär monolit", "Moduler: Katalog, Order, Kund, Betalning. Skalas horisontellt")
-    ContainerDb(db, "Databas", "Relationsdatabas", "Produkter, ordrar, kunder")
-    Container(cache, "Cache", "Cache", "Katalogdata")
-    Container(kö, "Meddelandekö", "Kö", "Asynkrona notifieringar")
-    Container(secrets, "Secrets-hantering", "Nyckelvalv", "Hemligheter, least privilege")
-  }
+    System_Boundary(ehandel, "E-handel") {
+        Container(webb, "Webbapplikation", "Webbgränssnitt", "Visar produkter och hanterar kassan")
+        Container(api, "Backend / API", "Applikation", "Hanterar kunder, order och betalningsflöden")
+        ContainerDb(db, "Relationsdatabas", "SQL", "Kunder, order, produkter och betalningsstatus")
+        
+    }
 
-  System_Ext(betal, "Betaltjänst")
-  System_Ext(epost, "E-post/SMS-leverantör")
+    Rel(kund, webb, "Använder via HTTPS")
+    Rel(webb, api, "Hämtar produkter och skickar order via HTTPS")
+    Rel(api, db, "Läser och skriver via SQL", "ACID-transaktioner")
+    Rel(api, betaltjanst, "Initierar betalning via HTTPS")
+    Rel(betaltjanst, api, "Skickar betalningsstatus via webhook")
+    UpdateRelStyle(api, betaltjanst, $offsetX="-40", $offsetY="-20")
+    UpdateRelStyle(betaltjanst, api, $offsetX="40", $offsetY="20")
+    UpdateRelStyle(webb, api, $offsetX="-125", $offsetY="-11")
 
-  Rel(kund, web, "Använder", "HTTPS")
-  Rel(admin, web, "Använder", "HTTPS")
-  Rel(web, app, "Anropar", "HTTP/REST")
-  Rel(app, db, "Läser/skriver")
-  Rel(app, cache, "Läser katalogdata")
-  Rel(app, secrets, "Hämtar hemligheter")
-  Rel(app, betal, "Begär betalning (timeout, idempotens)", "HTTPS")
-  Rel(betal, app, "Betalningsresultat", "Webhook")
-  Rel(app, kö, "Publicerar notifieringshändelser")
-  Rel(kö, epost, "Levererar notifieringar")
+    
+    UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
 ```
 
 ## Containrar och ansvar
@@ -40,6 +37,3 @@ C4Container
 | Webbklient | Kundens och adminens gränssnitt i webbläsaren |
 | Applikation | All affärslogik, uppdelad i moduler. Skalas horisontellt |
 | Databas | Persistent lagring av produkter, ordrar och kunder |
-| Cache | Snabb läsning av katalogdata under hög last |
-| Meddelandekö | Asynkron leverans av notifieringar |
-| Secrets-hantering | Hemligheter utanför källkoden |
