@@ -37,6 +37,3 @@ C4Container
 | Webbklient | Kundens och adminens gränssnitt i webbläsaren |
 | Applikation | All affärslogik, uppdelad i moduler. Skalas horisontellt |
 | Databas | Persistent lagring av produkter, ordrar och kunder |
-| Cache | Snabb läsning av katalogdata under hög last |
-| Meddelandekö | Asynkron leverans av notifieringar |
-| Secrets-hantering | Hemligheter utanför källkoden |
