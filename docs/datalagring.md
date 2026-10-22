@@ -20,6 +20,6 @@ Eftersom Freaky Fashion initialt byggs som en modulär monolit använder vi en g
 Azure Cosmos DB övervägdes, särskilt för produktkatalogen, men valdes inte eftersom produktdatan i nuläget är tillräckligt strukturerad och passar väl i en relationsdatabas. Att införa ytterligare en databasteknik skulle öka komplexiteten utan ett tydligt behov.
 
 ## C4 Container Diagram
-![alt text](/pics/image.png)
+![alt text](pics/image.png)
 Diagrammet visar den valda containerarkitekturen för Freaky Fashion och hur applikationen använder Azure SQL Database, Azure Blob Storage och Azure Managed Redis samt integrerar med extern betaltjänst.
 
