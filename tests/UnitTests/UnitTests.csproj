@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Catalog\Catalog.csproj" />
+    <ProjectReference Include="..\..\src\Orders\Orders.csproj" />
+    <ProjectReference Include="..\..\src\Customers\Customers.csproj" />
+    <ProjectReference Include="..\..\src\Payments\Payments.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

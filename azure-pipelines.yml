@@ -1,0 +1,38 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: windows-latest
+
+variables:
+  buildConfiguration: Release
+
+steps:
+  - task: UseDotNet@2
+    inputs:
+      packageType: sdk
+      version: 10.x
+
+  - script: dotnet restore FreakyFashion.slnx
+    displayName: Restore
+
+  - script: dotnet build FreakyFashion.slnx --configuration $(buildConfiguration) --no-restore
+    displayName: Build
+
+  - script: dotnet publish src/WebApi/WebApi.csproj --configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)/webapi
+    displayName: Publish Web API
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/webapi
+      ArtifactName: webapi
+
+  - task: AzureWebApp@1
+    displayName: Deploy to Azure App Service
+    inputs:
+      azureSubscription: $(azureServiceConnection)
+      appType: webApp
+      appName: $(azureWebAppName)
+      package: $(Build.ArtifactStagingDirectory)/webapi

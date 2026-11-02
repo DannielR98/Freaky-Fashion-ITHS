@@ -70,3 +70,5 @@ Rel(func, epost, "Skickar orderbekräftelse", "REST/HTTPS, synkron")
 | Webbklient | Kundens och adminens gränssnitt i webbläsaren |
 | Applikation | All affärslogik, uppdelad i moduler. Skalas horisontellt |
 | Databas | Persistent lagring av produkter, ordrar och kunder |
+
+Den konkreta lösningen består av en .NET Web API-container med modulerna Catalog, Orders, Customers och Payments i samma driftsättningsenhet. Azure Blob Storage lagrar produktbilder. API:t använder Azure Managed Redis för katalogcache och Azure SQL Database som source of truth. Orderbekräftelser och bildbehandling körs asynkront via Service Bus/Event Grid; betalningsinitiering sker synkront via REST och resultat tas emot via webhook.
